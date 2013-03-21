@@ -228,6 +228,14 @@ class ldPair:
         return (1-(float(self.levdist) / float(max(len(self.wordPair[0]),len(self.wordPair[1])))))
 
 def main():
+    choice = None
+    while choice != "1" and choice != "2" and choice != "3":
+        print "Do you want:"
+        print "(1) Orthographic Similarity"
+        print "(2) Normalized Levenshtein Distance"
+        print "(3) Both"
+        choice=raw_input()
+        
     wordpairs = open('input.csv','rU') #U makes cross platform encoding
     lines = []
     for line in wordpairs:
@@ -236,13 +244,20 @@ def main():
     wordpairs.close()
 
     for line in lines:
-        line.append(ldPair(line[0:2]).normlevdist)
-        line.append(ordenPair(line[0:2]).os)
-
+        if choice == "2":
+            line.append(ldPair(line[0:2]).normlevdist)
+            header = "Word1,Word2,normlevdist\n"
+        elif choice == "1":
+            line.append(ordenPair(line[0:2]).os)
+            header = "Word1,Word2,os\n"
+        elif choice == "3":
+            line.append(ldPair(line[0:2]).normlevdist)
+            line.append(ordenPair(line[0:2]).os)
+            header = "Word1,Word2,normlevdist,os\n"
     print lines
 
     file = codecs.open("output_wordSim.csv",encoding="utf-8",mode="w")
-    file.write("Word1,Word2,normlevdist,os\n")
+    file.write(header)
     for line in lines:
         for item in line:
             file.write(unicode(item)+",")
